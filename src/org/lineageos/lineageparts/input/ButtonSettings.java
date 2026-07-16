@@ -72,6 +72,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
     private static final String KEY_ASSIST_PRESS = "hardware_keys_assist_press";
     private static final String KEY_ASSIST_LONG_PRESS = "hardware_keys_assist_long_press";
     private static final String KEY_ASSIST_WAKE_SCREEN = "assist_wake_screen";
+    private static final String KEY_ASSIST_CAMERA_SHUTTER = "assist_camera_shutter";
     private static final String KEY_APP_SWITCH_PRESS = "hardware_keys_app_switch_press";
     private static final String KEY_APP_SWITCH_LONG_PRESS = "hardware_keys_app_switch_long_press";
     private static final String KEY_APP_SWITCH_WAKE_SCREEN = "app_switch_wake_screen";
@@ -915,6 +916,7 @@ public class ButtonSettings extends SettingsPreferenceFragment
                 result.add(KEY_ASSIST_PRESS);
                 result.add(KEY_ASSIST_LONG_PRESS);
                 result.add(KEY_ASSIST_WAKE_SCREEN);
+                result.add(KEY_ASSIST_CAMERA_SHUTTER);
             } else if (!DeviceUtils.canWakeUsingAssistKey(context)) {
                 result.add(KEY_ASSIST_WAKE_SCREEN);
             }

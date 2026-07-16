@@ -207,6 +207,12 @@
             android:title="@string/button_wake_title"
             android:defaultValue="false" />
 
+        <lineageos.preference.LineageSystemSettingSwitchPreference
+            android:key="assist_camera_shutter"
+            android:title="@string/assist_camera_shutter_title"
+            android:summary="@string/assist_camera_shutter_summary"
+            android:defaultValue="false" />
+
         <ListPreference
             android:key="hardware_keys_assist_press"
             android:dialogTitle="@string/hardware_keys_short_press_title"
