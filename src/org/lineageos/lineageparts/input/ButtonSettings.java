@@ -6,6 +6,7 @@
 
 package org.lineageos.lineageparts.input;
 
+import static android.app.contextualsearch.ContextualSearchManager.FEATURE_CONTEXTUAL_SEARCH;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON_OVERLAY;
 
 import static com.android.systemui.shared.recents.utilities.Utilities.isLargeScreen;
@@ -500,11 +501,24 @@ public class ButtonSettings extends SettingsPreferenceFragment
         }
 
         if (hasAssistKey) {
-            mAssistPressAction.setEntries(actionEntries);
-            mAssistPressAction.setEntryValues(actionValues);
+            if (requireContext().getPackageManager().hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)) {
+                String[] assistActionEntries = removeUnsupportedActionEntries(res,
+                        R.array.hardware_keys_assist_action_entries, unsupportedValues);
+                String[] assistActionValues = removeUnsupportedActionEntries(res,
+                        R.array.hardware_keys_assist_action_values, unsupportedValues);
 
-            mAssistLongPressAction.setEntries(actionEntries);
-            mAssistLongPressAction.setEntryValues(actionValues);
+                mAssistPressAction.setEntries(assistActionEntries);
+                mAssistPressAction.setEntryValues(assistActionValues);
+                mAssistLongPressAction.setEntries(assistActionEntries);
+                mAssistLongPressAction.setEntryValues(assistActionValues);
+            } else {
+                mAssistPressAction.setEntries(actionEntries);
+                mAssistPressAction.setEntryValues(actionValues);
+                mAssistLongPressAction.setEntries(actionEntries);
+                mAssistLongPressAction.setEntryValues(actionValues);
+            }
+            mAssistPressAction.setSummary(mAssistPressAction.getEntry());
+            mAssistLongPressAction.setSummary(mAssistLongPressAction.getEntry());
         }
 
         if (hasAppSwitchKey) {
@@ -567,6 +581,15 @@ public class ButtonSettings extends SettingsPreferenceFragment
         list.setSummary(list.getEntry());
         list.setOnPreferenceChangeListener(this);
         return list;
+    }
+
+    private String[] removeUnsupportedActionEntries(Resources res, int arrayResId,
+            List<Integer> unsupportedValues) {
+        List<String> entries = new ArrayList<>(Arrays.asList(res.getStringArray(arrayResId)));
+        for (int unsupportedValue: unsupportedValues) {
+            entries.remove(unsupportedValue);
+        }
+        return entries.toArray(new String[0]);
     }
 
     private void handleListChange(ListPreference pref, Object newValue, String setting) {
