@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.ArraySet;
 import android.view.Menu;
@@ -57,6 +58,7 @@ public class ChargingControlSettings extends SettingsPreferenceFragment implemen
     private static final String BYPASS_SAVED_ENABLED = "bypass_charge_saved_enabled";
     private static final String BYPASS_SAVED_MODE = "bypass_charge_saved_mode";
     private static final String BYPASS_SAVED_LIMIT = "bypass_charge_saved_limit";
+    private static final String PROP_BYPASS_SUPPORTED = "persist.sys.battery_bypass_supported";
 
     private LineageSystemSettingMainSwitchPreference mChargingControlEnabledPref;
     private LineageSystemSettingListPreference mChargingControlModePref;
@@ -90,7 +92,15 @@ public class ChargingControlSettings extends SettingsPreferenceFragment implemen
         mChargingControlTargetTimePref = prefSet.findPreference(CHARGING_CONTROL_TARGET_TIME_PREF);
         mChargingControlLimitPref = prefSet.findPreference(CHARGING_CONTROL_LIMIT_PREF);
         mBypassChargingPref = prefSet.findPreference(BYPASS_CHARGING_PREF);
-        mBypassChargingPref.setOnPreferenceChangeListener(this);
+        if (mBypassChargingPref != null) {
+            if (SystemProperties.getBoolean(PROP_BYPASS_SUPPORTED, false)) {
+                mBypassChargingPref.setOnPreferenceChangeListener(this);
+            } else {
+                prefSet.removePreference(mBypassChargingPref);
+                mBypassChargingPref = null;
+            }
+        }
+
         if (mChargingControlLimitPref != null) {
             if (mHealthInterface.allowFineGrainedSettings()) {
                 mChargingControlModePref.setEntries(concatStringArrays(
